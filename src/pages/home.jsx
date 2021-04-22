@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
     Page,
     BlockTitle,
@@ -6,7 +6,24 @@ import {
     ListItem,
 } from 'framework7-react';
 
-export default function Home({ f7route }) {
+export default function Home({ f7route, f7router }) {
+  
+  console.log("query: ",f7route.query.collection)
+  let [collection, setCollection] = useState()
+
+  useEffect(() => {
+    if(f7route.query?.collection){
+      
+      setCollection(f7route.query.collection)
+    } else {
+      console.log("no query")
+    }
+  },[])
+
+  useEffect(() => {
+    if(collection) {f7router.navigate(`/candidates?collection=${collection}&syncToAirtable=true`)}
+  },[collection])
+
   return(
   <Page>
     <BlockTitle>Projects</BlockTitle>
