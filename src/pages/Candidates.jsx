@@ -64,6 +64,11 @@ const CandidateCard = (props) => {
             {stars > 0 || <CardContent>
                 <Chip text="Unassessed" mediaBgColor="yellow" mediaTextColor="black" media="U" />
             </CardContent>}
+            <CardContent>
+                <Col>
+                    <img src={props.candidate["Photo-src"]} width="100%" alt="profile"/>
+                </Col>
+            </CardContent >
             <CardContent >
                 <Block>
                     {props.candidate["Language 1"] !== "null" && <Chip>{props.candidate["Language 1"]}</Chip>}
@@ -72,13 +77,7 @@ const CandidateCard = (props) => {
                     {props.candidate["Language 4"] !== "null" && <Chip>{props.candidate["Language 4"]}</Chip>}
                 </Block>
             </CardContent>
-            <CardContent>
-                <Col>
-                    <img src={props.candidate["Photo-src"]} width="100%" alt="profile"/>
-                </Col>
-            </CardContent >
             {props.candidate["Summary"] !== "" && <CardContent width="300px">
-                <Col>
                     <List accordionList>
                         <ListItem accordionItem title="Summary">
                             <AccordionContent>
@@ -88,7 +87,6 @@ const CandidateCard = (props) => {
                             </AccordionContent>
                         </ListItem>
                     </List>
-                </Col>
             </CardContent>}
             <CardFooter className="no-border">
                 <Col>
