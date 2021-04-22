@@ -46,15 +46,8 @@ export default function Candidates({ f7route }) {
 const CandidateCard = (props) => {
     const firstName = props.candidate["Name"].split(" ")[0]
     
-    let [stars, setStars] = useState(0)
+    const stars = props.candidate["Candidate Ranking"][Object.keys(props.candidate["Candidate Ranking"])[0]]
 
-    useEffect(() => {
-        let ranking = props.candidate["Candidate Ranking"]
-        console.log("ranking: ", ranking)
-        if(ranking > 0 ){
-            setStars(ranking)
-        }
-    },[])
     
     return(
         <Card>
@@ -64,7 +57,9 @@ const CandidateCard = (props) => {
                     <Icon f7="logo_linkedin"></Icon>
                 </Link>
             </CardHeader>
+            {stars > 0 && <Stars stars={stars}/>}
             <CardContent>
+                {stars > 0 || <p>Unassessed</p>}
                 <p>Summary</p>
                 <img src={props.candidate["Photo-src"]} width="216px" alt="profile"/>
                 <p>Candidate details</p>
@@ -80,10 +75,12 @@ const CandidateCard = (props) => {
 const Stars = (props) => {
     let starsArray = new Array(props.stars)
     return(
-        <Row>
-            {
-                starsArray.map(star => <Block>star</Block>)
-            }
-        </Row>
+        <CardContent>
+            <Icon f7={0 < props.stars ? "star_fill": "star"} color="yellow" size="16"></Icon>
+            <Icon f7={1<props.stars ? "star_fill": "star"} color="yellow" size="16"></Icon>
+            <Icon f7={2<props.stars ? "star_fill": "star"} color="yellow" size="16"></Icon>
+            <Icon f7={3<props.stars ? "star_fill": "star"} color="yellow" size="16"></Icon>
+            <Icon f7={4<props.stars ? "star_fill": "star"} color="yellow" size="16"></Icon>
+        </CardContent>
     )
 }
