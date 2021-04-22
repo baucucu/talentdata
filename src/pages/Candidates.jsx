@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { Button, Toggle, Col, Chip, Icon, Link, Page, Card, CardHeader, CardFooter, CardContent ,Navbar, Block, BlockTitle, Row, Segmented} from 'framework7-react';
+import { Button, List, ListItem, AccordionContent, Toggle, Col, Chip, Icon, Link, Page, Card, CardHeader, CardFooter, CardContent ,Navbar, Block, BlockTitle, Row, Segmented} from 'framework7-react';
 import axios from 'axios';
 
 export default function Candidates({ f7route }) {
@@ -57,7 +57,7 @@ const CandidateCard = (props) => {
     console.log(props.candidate)
     
     return(
-        <Card>
+        <Card style={{width: "360px"}}>
             <CardHeader >
                 <p>{firstName} </p>
                 <Link>
@@ -68,7 +68,7 @@ const CandidateCard = (props) => {
             {stars > 0 || <CardContent>
                 <Chip text="Unassessed" mediaBgColor="yellow" mediaTextColor="black" media="U" />
             </CardContent>}
-            <CardContent>
+            <CardContent >
                 <Block>
                     {props.candidate["Language 1"] !== "null" && <Chip>{props.candidate["Language 1"]}</Chip>}
                     {props.candidate["Language 2"] !== "null" && <Chip>{props.candidate["Language 2"]}</Chip>}
@@ -80,10 +80,20 @@ const CandidateCard = (props) => {
                 <Col>
                     <img src={props.candidate["Photo-src"]} width="100%" alt="profile"/>
                 </Col>
-            </CardContent>
-            <CardContent>
-                <p>Candidate details</p>
-            </CardContent>
+            </CardContent >
+            {props.candidate["Summary"] !== "" && <CardContent width="300px">
+                <Col>
+                    <List accordionList>
+                        <ListItem accordionItem title="Summary">
+                            <AccordionContent>
+                            <Block>
+                                {props.candidate["Summary"]}
+                            </Block>
+                            </AccordionContent>
+                        </ListItem>
+                    </List>
+                </Col>
+            </CardContent>}
             <CardFooter className="no-border">
                 <Col>
                     <Segmented  raised tag="p">
@@ -104,7 +114,6 @@ const CandidateCard = (props) => {
 }
 
 const Stars = (props) => {
-    let starsArray = new Array(props.stars)
     return(
         <CardContent>
             <Icon f7={0 < props.stars ? "star_fill": "star"} color="yellow" size="16"></Icon>
