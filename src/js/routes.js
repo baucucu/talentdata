@@ -8,7 +8,7 @@ export default [
     component: HomePage,
   },
   {
-    path: '/candidates/:collection',
+    path: '/candidates',
     component: Candidates,
   },
   {

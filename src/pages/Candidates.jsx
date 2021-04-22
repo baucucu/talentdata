@@ -15,12 +15,12 @@ export default function Candidates({ f7route }) {
     }
     
     useEffect(() => {
-        console.log(f7route.params)
-        fetchCandidates(f7route.params.collection)
+        console.log(f7route.query)
+        fetchCandidates(f7route.query.collection)
     },[])
     
     useEffect(() => {
-        setTitle(f7route.params.collection)
+        setTitle(f7route.query.collection)
     },[])
 
     return (
