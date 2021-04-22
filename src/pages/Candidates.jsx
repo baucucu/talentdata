@@ -59,10 +59,11 @@ const CandidateCard = (props) => {
     return(
         <Card style={{width: "360px"}}>
             <CardHeader >
-                <p>{firstName} </p>
-                <Link>
-                    <Icon f7="logo_linkedin" color="white"></Icon>
+                <p>{firstName} ({props.candidate["City"]}, {props.candidate["Country"]})  </p>
+                <Link  target="_blank" iconF7="logo_linkedin" color="white" href={`${props.candidate["Public LinkedIn URL"]}`} external>
+                    {/* <Icon f7="logo_linkedin" color="white"></Icon> */}
                 </Link>
+                
             </CardHeader>
             {stars > 0 && <Stars stars={stars}/>}
             {stars > 0 || <CardContent>
