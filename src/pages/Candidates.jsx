@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { Button,Col, Chip, Icon, Link, Page, Card, CardHeader, CardFooter, CardContent ,Navbar, Block, BlockTitle, Row, Segmented} from 'framework7-react';
+import { Button, Toggle, Col, Chip, Icon, Link, Page, Card, CardHeader, CardFooter, CardContent ,Navbar, Block, BlockTitle, Row, Segmented} from 'framework7-react';
 import axios from 'axios';
 
 export default function Candidates({ f7route }) {
@@ -30,10 +30,13 @@ export default function Candidates({ f7route }) {
     return (
       <Page>
         {/* <Navbar title={title} backLink="Back" /> */}
-        {/* <BlockTitle>
+        <BlockTitle>
             <b># Candidates: </b>{candidates.length}
-        </BlockTitle> */}
-
+            
+        </BlockTitle>
+        <Block>
+            <Toggle></Toggle>
+        </Block>
         <Block>
             <Row>
                 {candidates.map(candidate => {
@@ -51,7 +54,7 @@ const CandidateCard = (props) => {
     const firstName = props.candidate["Name"].split(" ")[0]
     
     const stars = props.candidate["Candidate Ranking"][Object.keys(props.candidate["Candidate Ranking"])[0]]
-
+    console.log(props.candidate)
     
     return(
         <Card>
@@ -66,7 +69,12 @@ const CandidateCard = (props) => {
                 <Chip text="Unassessed" mediaBgColor="yellow" mediaTextColor="black" media="U" />
             </CardContent>}
             <CardContent>
-                <p>Summary</p>
+                <Block>
+                    {props.candidate["Language 1"] !== "null" && <Chip>{props.candidate["Language 1"]}</Chip>}
+                    {props.candidate["Language 2"] !== "null" && <Chip>{props.candidate["Language 2"]}</Chip>}
+                    {props.candidate["Language 3"] !== "null" && <Chip>{props.candidate["Language 3"]}</Chip>}
+                    {props.candidate["Language 4"] !== "null" && <Chip>{props.candidate["Language 4"]}</Chip>}
+                </Block>
             </CardContent>
             <CardContent>
                 <Col>
