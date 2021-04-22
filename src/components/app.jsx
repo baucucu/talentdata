@@ -82,7 +82,7 @@ const MyApp = () => {
 
 
         {/* Your main view, should have "view-main" class */}
-        <View main className="safe-areas" url="/" />
+        <View main className="safe-areas" browserHistory browserHistorySeparator="" url="/" />
 
       {/* Popup */}
       <Popup id="my-popup">

@@ -15,6 +15,7 @@ export default function Candidates({ f7route }) {
     }
     
     useEffect(() => {
+        console.log(f7route.params)
         fetchCandidates(f7route.params.collection)
     },[])
     
