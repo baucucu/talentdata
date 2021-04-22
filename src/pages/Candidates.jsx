@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { Toggle, Chip, Icon, Link, Page, Card, CardHeader, CardFooter, CardContent ,Navbar, Block, BlockTitle, Row} from 'framework7-react';
+import { Button,Col, Chip, Icon, Link, Page, Card, CardHeader, CardFooter, CardContent ,Navbar, Block, BlockTitle, Row, Segmented} from 'framework7-react';
 import axios from 'axios';
 
 export default function Candidates({ f7route }) {
@@ -55,22 +55,41 @@ const CandidateCard = (props) => {
     
     return(
         <Card>
-            <CardHeader>
+            <CardHeader >
                 <p>{firstName} </p>
                 <Link>
-                    <Icon f7="logo_linkedin"></Icon>
+                    <Icon f7="logo_linkedin" color="white"></Icon>
                 </Link>
             </CardHeader>
             {stars > 0 && <Stars stars={stars}/>}
+            {stars > 0 || <CardContent>
+                <Chip text="Unassessed" mediaBgColor="yellow" mediaTextColor="black" media="U" />
+            </CardContent>}
             <CardContent>
-                {stars > 0 || <Chip text="Unassessed" mediaBgColor="yellow" mediaTextColor="black" media="U" />}
                 <p>Summary</p>
-                <img src={props.candidate["Photo-src"]} width="216px" alt="profile"/>
+            </CardContent>
+            <CardContent>
+                <Col>
+                    <img src={props.candidate["Photo-src"]} width="100%" alt="profile"/>
+                </Col>
+            </CardContent>
+            <CardContent>
                 <p>Candidate details</p>
             </CardContent>
             <CardFooter className="no-border">
-                <Link>Action 1</Link>
-                <Link>Action 2</Link>
+                <Col>
+                    <Segmented  raised tag="p">
+                        <Button   color="green">
+                            Approved
+                        </Button>
+                        <Button  active color="blue">
+                            Pending
+                        </Button>
+                        <Button  color="red">
+                            Rejected
+                        </Button>
+                    </Segmented>
+                </Col>
             </CardFooter>
         </Card>
     )
