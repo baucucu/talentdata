@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { Toggle, Icon, Link, Page, Card, CardHeader, CardFooter, CardContent ,Navbar, Block, BlockTitle, Row} from 'framework7-react';
+import { Toggle, Chip, Icon, Link, Page, Card, CardHeader, CardFooter, CardContent ,Navbar, Block, BlockTitle, Row} from 'framework7-react';
 import axios from 'axios';
 
 export default function Candidates({ f7route }) {
@@ -20,15 +20,19 @@ export default function Candidates({ f7route }) {
     },[])
     
     useEffect(() => {
+        
+    })
+
+    useEffect(() => {
         setTitle(f7route.query.collection)
     },[])
 
     return (
       <Page>
-        <Navbar title={title} backLink="Back" />
-        <BlockTitle>
+        {/* <Navbar title={title} backLink="Back" /> */}
+        {/* <BlockTitle>
             <b># Candidates: </b>{candidates.length}
-        </BlockTitle>
+        </BlockTitle> */}
 
         <Block>
             <Row>
@@ -59,7 +63,7 @@ const CandidateCard = (props) => {
             </CardHeader>
             {stars > 0 && <Stars stars={stars}/>}
             <CardContent>
-                {stars > 0 || <p>Unassessed</p>}
+                {stars > 0 || <Chip text="Unassessed" mediaBgColor="yellow" mediaTextColor="black" media="U" />}
                 <p>Summary</p>
                 <img src={props.candidate["Photo-src"]} width="216px" alt="profile"/>
                 <p>Candidate details</p>
