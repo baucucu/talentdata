@@ -34,9 +34,7 @@ export default function Candidates({ f7route }) {
             <b># Candidates: </b>{candidates.length}
             
         </BlockTitle>
-        <Block>
-            <Toggle></Toggle>
-        </Block>
+        
         <Block>
             <Row>
                 {candidates.map(candidate => {
@@ -60,10 +58,7 @@ const CandidateCard = (props) => {
         <Card style={{width: "360px"}}>
             <CardHeader >
                 <p>{firstName} ({props.candidate["City"]}, {props.candidate["Country"]})  </p>
-                <Link  target="_blank" iconF7="logo_linkedin" color="white" href={`${props.candidate["Public LinkedIn URL"]}`} external>
-                    {/* <Icon f7="logo_linkedin" color="white"></Icon> */}
-                </Link>
-                
+                <Link  target="_blank" iconF7="logo_linkedin" color="white" href={`${props.candidate["Public LinkedIn URL"]}`} external/>
             </CardHeader>
             {stars > 0 && <Stars stars={stars}/>}
             {stars > 0 || <CardContent>
