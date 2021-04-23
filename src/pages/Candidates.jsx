@@ -55,12 +55,11 @@ export default function Candidates({ f7route }) {
         <Panel right cover themeDark containerEl="#panel-page" id="panel-nested">
           <Page>
             <List accordionList>
-                <Link sortableToggle=".sortable">Toggle</Link>
+                
                 <ListItem accordionItem active title="Sort">
                     <AccordionContent>
                             <ListItem title="Edit mode" textColor="white" >
-                                {/* <Icon slot="media" f7="hand_thumbsup_fill" size="18px" color="white"></Icon> */}
-                                <Toggle slot="after" sortableToggle=".sortable"></Toggle>
+                                <Link sortableToggle=".sortable" textColor="white">Toggle</Link>
                             </ListItem>
                         <List sortable>
                             <ListItem title="Candidate Ranking" textColor="yellow" color="yellow">
@@ -82,19 +81,19 @@ export default function Candidates({ f7route }) {
                         <List>
                             <ListItem title="Approved" textColor="teal" color="teal">
                                 <Icon slot="media" f7="hand_thumbsup_fill" size="18px" color="teal"></Icon>
-                                <Toggle slot="after" checked></Toggle>
+                                <Toggle slot="after" ></Toggle>
                             </ListItem>
                             <ListItem title="Pending" textColor="deeporange" color="deeporange">
                                 <Icon slot="media" f7="pause_circle_fill" size="18px" color="deeporange"></Icon>
-                                <Toggle slot="after" checked></Toggle>
+                                <Toggle slot="after" ></Toggle>
                             </ListItem>
                             <ListItem title="Rejcted" textColor="pink" color="pink">
                                 <Icon slot="media" f7="hand_thumbsdown_fill" size="18px" color="pink"></Icon>
-                                <Toggle slot="after" checked></Toggle>
+                                <Toggle slot="after" ></Toggle>
                             </ListItem>
                             <ListItem title="In progress" textColor="lightblue" color="lightblue">
                                 <Icon slot="media" f7="graph_circle" size="18px" color="lightblue"/>
-                                <Toggle slot="after" checked></Toggle>
+                                <Toggle slot="after" ></Toggle>
                             </ListItem>
                         </List>
                     </AccordionContent>
@@ -141,7 +140,7 @@ const CandidateCard = (props) => {
     },[])
 
     return(
-        <Card style={{width: "360px"}}>
+        <Card style={{width: "360px"}} outline={candidate["Status"] === "" ? null : true} borderColor={candidate["Status"] === "" ? null : candidate["Status"] === "approved" ? "teal" : "pink"}>
             <CardHeader>
                 <p>{firstName} ({props.candidate["City"]}, {props.candidate["Country"]})  </p>
                 <Link  target="_blank" iconF7="logo_linkedin" color="white" href={`${props.candidate["Public LinkedIn URL"]}`} external/>
