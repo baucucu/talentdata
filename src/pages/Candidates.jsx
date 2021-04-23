@@ -88,7 +88,7 @@ const CandidateCard = (props) => {
                         </ListItem>
                     </List>
             </CardContent>}
-            <CardFooter className="no-border">
+            <CardFooter className="no-border" style={{marginTop:"20px"}}>
                 <Col>
                     <Segmented  raised tag="p">
                         <Button   color="green">
