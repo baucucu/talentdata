@@ -1,38 +1,24 @@
 import React, {useState, useEffect} from 'react';
 import { Button, List, ListItem, AccordionContent, Toggle, Col, Chip, Icon, Link, Page, Card, CardHeader, CardFooter, CardContent ,Navbar, Block, BlockTitle, Row, Segmented} from 'framework7-react';
-import axios from 'axios';
+import mongodb from '../js/mongodb';
 
 export default function Candidates({ f7route }) {
     
     const [syncToAirtable, setSyncToAirtable] = useState(true)
     const [candidates, setCandidates] = useState([])
-    const [title, setTitle] = useState("Candidates")
-
-    async function fetchCandidates(collection) {
-        const url = `https://eu-central-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/talentdata-wqdfe/service/talentdataWebhook/incoming_webhook/talentdataWebhook?collection=${collection}&syncToAirtable=${syncToAirtable}`
-        const result = await axios(url)
-        setCandidates(result.data)
-    }
     
-    useEffect(() => {
-        console.log(f7route.query)
-        fetchCandidates(f7route.query.collection)
-    },[])
+    const db = mongodb.db("candidates")
+    const coll = db.collection(f7route.query.collection)
     
-    useEffect(() => {
-        
-    })
-
-    useEffect(() => {
-        setTitle(f7route.query.collection)
+    useEffect(async () => {
+        const records = await coll.find()
+        setCandidates(records)
     },[])
 
     return (
       <Page>
-        {/* <Navbar title={title} backLink="Back" /> */}
         <BlockTitle>
             <b># Candidates: </b>{candidates.length}
-            
         </BlockTitle>
         
         <Block>
@@ -51,8 +37,8 @@ export default function Candidates({ f7route }) {
 const CandidateCard = (props) => {
     const firstName = props.candidate["Name"].split(" ")[0]
     
-    const stars = props.candidate["Candidate Ranking"][Object.keys(props.candidate["Candidate Ranking"])[0]]
-    console.log(props.candidate)
+    const stars = props.candidate["Candidate Ranking"] //[Object.keys(props.candidate["Candidate Ranking"])[0]]
+    // console.log(props.candidate)
     
     return(
         <Card style={{width: "360px"}}>

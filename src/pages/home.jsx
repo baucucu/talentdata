@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import mongodb from '../js/mongodb'
 import {
     Page,
     BlockTitle,
@@ -6,9 +7,11 @@ import {
     ListItem,
 } from 'framework7-react';
 
+
 export default function Home({ f7route, f7router }) {
   
   console.log("query: ",f7route.query.collection)
+  
   let [collection, setCollection] = useState()
 
   useEffect(() => {
