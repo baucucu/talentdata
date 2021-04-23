@@ -191,7 +191,7 @@ const CandidateCard = (props) => {
                         <Button 
                             color="green" 
                             active={candidate["Status"] === "approved"}
-                            onClick={() => {updateCandidate(coll, candidate._id, "approved"); fetchCandidate(candidate._id); console.log("approved clicked")}}
+                            onClick={() => {updateCandidate(coll, candidate._id, "approved").then(result => {fetchCandidate(candidate._id)}); console.log("approved clicked")}}
                         >
                             <Icon f7="hand_thumbsup_fill" size="14px" style={{marginRight:"8px"}}></Icon>
                             {candidate["Status"] === "approved" ? "Approved" : "Approve"}
@@ -199,7 +199,7 @@ const CandidateCard = (props) => {
                         <Button 
                             color="deeporange" 
                             active={candidate["Status"] === ""}
-                            onClick={() => {updateCandidate(coll, candidate._id, ""); fetchCandidate(candidate._id); console.log("pending clicked")}}
+                            onClick={() => {updateCandidate(coll, candidate._id, "").then(result => {fetchCandidate(candidate._id)}); console.log("pending clicked")}}
                         >
                             <Icon f7="pause_circle_fill" size="14px" style={{marginRight:"8px"}}></Icon>
                             Pending
@@ -207,7 +207,7 @@ const CandidateCard = (props) => {
                         <Button  
                             color="red" 
                             active={candidate["Status"] === "rejected"}
-                            onClick={() => {updateCandidate(coll, candidate._id, "rejected"); fetchCandidate(candidate._id); console.log("rejected clicked")}}
+                            onClick={() => {updateCandidate(coll, candidate._id, "rejected").then(result => {fetchCandidate(candidate._id)}); console.log("rejected clicked")}}
                         >
                             <Icon f7="hand_thumbsdown_fill" size="14px" style={{marginRight:"8px"}}></Icon>
                             {candidate["Status"] === "rejected" ? "Rejected" : "Reject"}
