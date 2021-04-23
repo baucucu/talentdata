@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 // import { f7ready } from 'framework7-react';
-import { Button, List, ListItem, AccordionContent, Toggle, Col, Chip, Icon, Link, Page, Card, CardHeader, CardFooter, CardContent ,Navbar, Block, BlockTitle, Row, Segmented} from 'framework7-react';
+import { Button, List, ListItem, AccordionContent, Toggle, Col, Chip, Icon, Link, Page, Card, CardHeader, CardFooter, CardContent ,Navbar,NavRight, Block, BlockTitle, Row, Segmented} from 'framework7-react';
 import mongodb from '../js/mongodb';
 
 export default function Candidates({ f7route }) {
@@ -42,10 +42,13 @@ export default function Candidates({ f7route }) {
 
     return (
       <Page>
-        <BlockTitle>
-            <b># Candidates: </b>{candidates.length}
-        </BlockTitle>
-        
+        <Navbar title={f7route.query.collection.replace("_"," ").toUpperCase()} subtitle={candidates.length + " candidates"}>
+        <NavRight>
+            <Link color="white" iconF7="scope" iconSize="18px" text="Focus your search" style={{fontSize: "14px"}}>
+                {/* <Icon color="white" f7="scope"/> */}
+            </Link>
+        </NavRight>
+        </Navbar>
         <Block>
             <Row>
                 {candidates.map(candidate => {
@@ -86,7 +89,7 @@ const CandidateCard = (props) => {
 
     return(
         <Card style={{width: "360px"}}>
-            <CardHeader >
+            <CardHeader>
                 <p>{firstName} ({props.candidate["City"]}, {props.candidate["Country"]})  </p>
                 <Link  target="_blank" iconF7="logo_linkedin" color="white" href={`${props.candidate["Public LinkedIn URL"]}`} external/>
             </CardHeader>
@@ -189,9 +192,9 @@ const CandidateCard = (props) => {
             <CardFooter className="no-border" style={{marginTop:"20px"}}>
                     <Segmented  raised tag="p" style={{width:"100%"}}>
                         <Button 
-                            color="green" 
+                            color="teal" 
                             active={candidate["Status"] === "approved"}
-                            onClick={() => {updateCandidate(coll, candidate._id, "approved").then(result => {fetchCandidate(candidate._id)}); console.log("approved clicked")}}
+                            onClick={() => {updateCandidate(coll, candidate._id, "approved").then(() => {fetchCandidate(candidate._id)}); console.log("approved clicked")}}
                         >
                             <Icon f7="hand_thumbsup_fill" size="14px" style={{marginRight:"8px"}}></Icon>
                             {candidate["Status"] === "approved" ? "Approved" : "Approve"}
@@ -199,15 +202,15 @@ const CandidateCard = (props) => {
                         <Button 
                             color="deeporange" 
                             active={candidate["Status"] === ""}
-                            onClick={() => {updateCandidate(coll, candidate._id, "").then(result => {fetchCandidate(candidate._id)}); console.log("pending clicked")}}
+                            onClick={() => {updateCandidate(coll, candidate._id, "").then(() => {fetchCandidate(candidate._id)}); console.log("pending clicked")}}
                         >
                             <Icon f7="pause_circle_fill" size="14px" style={{marginRight:"8px"}}></Icon>
                             Pending
                         </Button>
                         <Button  
-                            color="red" 
+                            color="pink" 
                             active={candidate["Status"] === "rejected"}
-                            onClick={() => {updateCandidate(coll, candidate._id, "rejected").then(result => {fetchCandidate(candidate._id)}); console.log("rejected clicked")}}
+                            onClick={() => {updateCandidate(coll, candidate._id, "rejected").then(() => {fetchCandidate(candidate._id)}); console.log("rejected clicked")}}
                         >
                             <Icon f7="hand_thumbsdown_fill" size="14px" style={{marginRight:"8px"}}></Icon>
                             {candidate["Status"] === "rejected" ? "Rejected" : "Reject"}
@@ -217,6 +220,8 @@ const CandidateCard = (props) => {
         </Card>
     )
 }
+
+
 
 const Stars = (props) => {
     return(
