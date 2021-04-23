@@ -1,10 +1,13 @@
 import React, {useState, useEffect} from 'react';
 // import { f7ready } from 'framework7-react';
-import { Button, List, ListItem, AccordionContent, Toggle, Col, Chip, Icon, Link, Page, Card, CardHeader, CardFooter, CardContent ,Navbar,NavRight, Block, BlockTitle, Row, Segmented} from 'framework7-react';
+import { Panel, Button, List, ListItem, AccordionContent, Toggle, Col, Chip, Icon, Link, Page, Card, CardHeader, CardFooter, CardContent ,Navbar,NavRight, Block, BlockTitle, Row, Segmented} from 'framework7-react';
 import mongodb from '../js/mongodb';
 
 export default function Candidates({ f7route }) {
     
+    let [filters, setFilters] = useState()
+    const [sort, setSort] = useState()
+
     const [syncToAirtable, setSyncToAirtable] = useState(true)
     const [candidates, setCandidates] = useState([])
     
@@ -41,14 +44,64 @@ export default function Candidates({ f7route }) {
     },[])
 
     return (
-      <Page>
+      <Page id="panel-page">
         <Navbar title={f7route.query.collection.replace("_"," ").toUpperCase()} subtitle={candidates.length + " candidates"}>
-        <NavRight>
-            <Link color="white" iconF7="scope" iconSize="18px" text="Focus your search" style={{fontSize: "14px"}}>
-                {/* <Icon color="white" f7="scope"/> */}
-            </Link>
-        </NavRight>
+            <NavRight>
+                <Link color="white" iconF7="scope" iconSize="18px" text="Focus your search" style={{fontSize: "14px"}} panelOpen="#panel-nested">
+                    {/* <Icon color="white" f7="scope"/> */}
+                </Link>
+            </NavRight>
         </Navbar>
+        <Panel right cover themeDark containerEl="#panel-page" id="panel-nested">
+          <Page>
+            <List accordionList>
+                <Link sortableToggle=".sortable">Toggle</Link>
+                <ListItem accordionItem active title="Sort">
+                    <AccordionContent>
+                            <ListItem title="Edit mode" textColor="white" >
+                                {/* <Icon slot="media" f7="hand_thumbsup_fill" size="18px" color="white"></Icon> */}
+                                <Toggle slot="after" sortableToggle=".sortable"></Toggle>
+                            </ListItem>
+                        <List sortable>
+                            <ListItem title="Candidate Ranking" textColor="yellow" color="yellow">
+                                <Icon slot="media" f7="star_fill" size="18px" color="yellow"></Icon>
+                            </ListItem>
+                            <ListItem title="Candidate Ranking" textColor="yellow" color="yellow">
+                                <Icon slot="media" f7="star_fill" size="18px" color="yellow"></Icon>
+                            </ListItem>
+                            <ListItem title="Candidate Ranking" textColor="yellow" color="yellow">
+                                <Icon slot="media" f7="star_fill" size="18px" color="yellow"></Icon>
+                            </ListItem>
+                        </List>
+                    </AccordionContent>
+                </ListItem>
+            </List>
+            <List accordionList >
+                <ListItem accordionItem active title="Filters">
+                    <AccordionContent>
+                        <List>
+                            <ListItem title="Approved" textColor="teal" color="teal">
+                                <Icon slot="media" f7="hand_thumbsup_fill" size="18px" color="teal"></Icon>
+                                <Toggle slot="after" checked></Toggle>
+                            </ListItem>
+                            <ListItem title="Pending" textColor="deeporange" color="deeporange">
+                                <Icon slot="media" f7="pause_circle_fill" size="18px" color="deeporange"></Icon>
+                                <Toggle slot="after" checked></Toggle>
+                            </ListItem>
+                            <ListItem title="Rejcted" textColor="pink" color="pink">
+                                <Icon slot="media" f7="hand_thumbsdown_fill" size="18px" color="pink"></Icon>
+                                <Toggle slot="after" checked></Toggle>
+                            </ListItem>
+                            <ListItem title="In progress" textColor="lightblue" color="lightblue">
+                                <Icon slot="media" f7="graph_circle" size="18px" color="lightblue"/>
+                                <Toggle slot="after" checked></Toggle>
+                            </ListItem>
+                        </List>
+                    </AccordionContent>
+                </ListItem>
+            </List>
+          </Page>
+        </Panel>
         <Block>
             <Row>
                 {candidates.map(candidate => {
@@ -95,7 +148,7 @@ const CandidateCard = (props) => {
             </CardHeader>
             {stars > 0 && <Stars stars={stars}/>}
             {stars > 0 || <CardContent>
-                <Chip text="Unassessed" mediaBgColor="yellow" mediaTextColor="black" media="U" />
+                <Chip text="Assessment in progress" mediaBgColor="lightblue" color="lightblue" textColor="black" mediaTextColor="black" iconF7="graph_circle" />
             </CardContent>}
             <CardContent>
                 <Col>
@@ -192,16 +245,18 @@ const CandidateCard = (props) => {
             <CardFooter className="no-border" style={{marginTop:"20px"}}>
                     <Segmented  raised tag="p" style={{width:"100%"}}>
                         <Button 
-                            color="teal" 
+                            color="green" 
                             active={candidate["Status"] === "approved"}
+                            textColor={candidate["Status"] === "approved" ? "black" : "green"}
                             onClick={() => {updateCandidate(coll, candidate._id, "approved").then(() => {fetchCandidate(candidate._id)}); console.log("approved clicked")}}
                         >
                             <Icon f7="hand_thumbsup_fill" size="14px" style={{marginRight:"8px"}}></Icon>
                             {candidate["Status"] === "approved" ? "Approved" : "Approve"}
                         </Button>
                         <Button 
-                            color="deeporange" 
+                            color="deeporange"
                             active={candidate["Status"] === ""}
+                            textColor={candidate["Status"] === "" ? "black" : "deeporange"}
                             onClick={() => {updateCandidate(coll, candidate._id, "").then(() => {fetchCandidate(candidate._id)}); console.log("pending clicked")}}
                         >
                             <Icon f7="pause_circle_fill" size="14px" style={{marginRight:"8px"}}></Icon>
@@ -210,6 +265,7 @@ const CandidateCard = (props) => {
                         <Button  
                             color="pink" 
                             active={candidate["Status"] === "rejected"}
+                            textColor={candidate["Status"] === "rejected" ? "black" : "pink"}
                             onClick={() => {updateCandidate(coll, candidate._id, "rejected").then(() => {fetchCandidate(candidate._id)}); console.log("rejected clicked")}}
                         >
                             <Icon f7="hand_thumbsdown_fill" size="14px" style={{marginRight:"8px"}}></Icon>
