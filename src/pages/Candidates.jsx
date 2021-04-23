@@ -53,7 +53,6 @@ export default function Candidates({ f7route }) {
                         <CandidateCard 
                             key={candidate["Public LinkedIn URL"]} 
                             candidate={candidate}
-                            fetchCandidate={fetchCandidate}
                             fetchCandidates={fetchCandidates}
                             updateCandidate={updateCandidate}
                             coll={coll}
@@ -74,9 +73,16 @@ const CandidateCard = (props) => {
     const firstName = props.candidate["Name"].split(" ")[0]
     
     const stars = props.candidate["Candidate Ranking"]
-    const [status, setStatus] = useState(props.candidate["Status"])
     
-    
+    const fetchCandidate = async _id => {
+        const record = await coll.findOne({"_id": _id})
+        console.log("candidate fetched", record)
+        setCandidate(record)
+    }
+
+    useEffect(() => {
+        setCandidate(props.candidate)
+    },[])
 
     return(
         <Card style={{width: "360px"}}>
@@ -184,27 +190,27 @@ const CandidateCard = (props) => {
                     <Segmented  raised tag="p" style={{width:"100%"}}>
                         <Button 
                             color="green" 
-                            active={status === "approved"}
-                            onClick={() => {updateCandidate(coll, props.candidate._id, "approved"); fetchCandidates(coll); console.log("approved")}}
+                            active={candidate["Status"] === "approved"}
+                            onClick={() => {updateCandidate(coll, candidate._id, "approved"); fetchCandidate(candidate._id); console.log("approved clicked")}}
                         >
                             <Icon f7="hand_thumbsup_fill" size="14px" style={{marginRight:"8px"}}></Icon>
-                            {status === "approved" ? "Approved" : "Approve"}
+                            {candidate["Status"] === "approved" ? "Approved" : "Approve"}
                         </Button>
                         <Button 
                             color="deeporange" 
-                            active={status === ""}
-                            onClick={() => {updateCandidate(coll, props.candidate._id, ""); console.log("pending")}}
+                            active={candidate["Status"] === ""}
+                            onClick={() => {updateCandidate(coll, candidate._id, ""); fetchCandidate(candidate._id); console.log("pending clicked")}}
                         >
                             <Icon f7="pause_circle_fill" size="14px" style={{marginRight:"8px"}}></Icon>
                             Pending
                         </Button>
                         <Button  
                             color="red" 
-                            active={status === "rejected"}
-                            onClick={() => {updateCandidate(coll, props.candidate._id, "rejected"); console.log("rejected")}}
+                            active={candidate["Status"] === "rejected"}
+                            onClick={() => {updateCandidate(coll, candidate._id, "rejected"); fetchCandidate(candidate._id); console.log("rejected clicked")}}
                         >
                             <Icon f7="hand_thumbsdown_fill" size="14px" style={{marginRight:"8px"}}></Icon>
-                            {status === "rejected" ? "Rejected" : "Reject"}
+                            {candidate["Status"] === "rejected" ? "Rejected" : "Reject"}
                         </Button>
                     </Segmented>
             </CardFooter>
