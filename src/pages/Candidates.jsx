@@ -228,19 +228,19 @@ const CandidateCard = (props) => {
     return(
         <Card className="elevation-10" style={{width: "360px", boxShadow:"10px 10px"}} outline={candidate["Status"] === "pending" ? null : true} borderColor={candidate["Status"] === "" ? null : candidate["Status"] === "approved" ? "teal" : "pink"}>
             <CardHeader>
-                <p>{firstName}</p>
+                <h3>{firstName}</h3>
                 <Link  target="_blank" iconF7="logo_linkedin" color="white" href={`${props.candidate["Public LinkedIn URL"]}`} external/>
             </CardHeader>
             <CardHeader style={{fontSize:"14px"}}>
                 <b>{props.candidate["Current Title"]} @ {props.candidate["Current Employer"]}</b>
             </CardHeader>
-            <CardHeader style={{fontSize:"14px"}}>
-                <p>{props.candidate["TalentData Notes"]}</p>
-            </CardHeader>
             {stars > 0 && <Stars stars={stars}/>}
             {stars > 0 || <CardContent>
                 <Chip text="Assessment in progress" mediaBgColor="lightblue" color="lightblue" textColor="black" mediaTextColor="black" iconF7="graph_circle" />
             </CardContent>}
+            <CardHeader style={{fontSize:"14px"}}>
+                <p>{props.candidate["TalentData Notes"]}</p>
+            </CardHeader>
             <CardContent>
                 <Col>
                     <img src={props.candidate["Photo-src"]} width="100%" alt="profile"/>
