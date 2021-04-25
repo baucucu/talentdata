@@ -164,6 +164,8 @@ export default function Candidates({ f7route }) {
                     min={1}
                     max={5}
                     step={1}
+                    scale={true}
+                    scaleSteps={5}
                     value={[
                         Math.min(...Array.from([1,2,3,4,5]).filter(x => rankingsFilters[x])), 
                         Math.max(...Array.from([1,2,3,4,5]).filter(x => rankingsFilters[x])), 
@@ -187,7 +189,7 @@ export default function Candidates({ f7route }) {
           </Page>
         </Panel>
         <Block>
-            <Row>
+            <Row style={{justifyContent:"space-evenly"}}>
                 {candidates.map(candidate => {
                     return(
                         <CandidateCard 
@@ -225,7 +227,7 @@ const CandidateCard = (props) => {
     },[])
 
     return(
-        <Card style={{width: "360px"}} outline={candidate["Status"] === "pending" ? null : true} borderColor={candidate["Status"] === "" ? null : candidate["Status"] === "approved" ? "teal" : "pink"}>
+        <Card className="elevation-10" style={{width: "360px", boxShadow:"10px 10px"}} outline={candidate["Status"] === "pending" ? null : true} borderColor={candidate["Status"] === "" ? null : candidate["Status"] === "approved" ? "teal" : "pink"}>
             <CardHeader>
                 <p>{firstName}</p>
                 <Link  target="_blank" iconF7="logo_linkedin" color="white" href={`${props.candidate["Public LinkedIn URL"]}`} external/>
