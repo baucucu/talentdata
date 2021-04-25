@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { f7 } from 'framework7-react';
-import { Panel, Button, List, ListItem, AccordionContent, Toggle, Col, Chip, Icon, Link, Page, Card, CardHeader, CardFooter, CardContent ,Navbar,NavRight, Block, BlockTitle, Row, Segmented} from 'framework7-react';
+import { Panel, Button, List, ListItem,ListItemCell,Range, AccordionContent, Toggle, Col, Chip, Icon, Link, Page, Card, CardHeader, CardFooter, CardContent ,Navbar,NavRight, Block, BlockTitle, Row, Segmented} from 'framework7-react';
 import mongodb from '../js/mongodb';
 
 
@@ -15,14 +15,41 @@ export default function Candidates({ f7route }) {
         pending: false,
         rejected: false
     })
+    const [rankingsFilters, setRankingFilters] = useState({
+        1: false,
+        2: false,
+        3: true,
+        4: true,
+        5: true,
+        NaN: false
+    })
+    const onRankingRangeChange = (values) => {
+        console.log("ranking range changed: ", values)
+        let rankings = rankingsFilters
+        for(let rank=1; rank<=5;rank++){
+            rankings[rank] = rank>=values[0] && rank<=values[1]
+        }
+        setRankingFilters(rankings)
+        fetchCandidates(coll)
+      };
     
+    function onNaNChange() {
+        let rankings = rankingsFilters
+        rankings.NaN = !rankings.NaN
+        setRankingFilters(rankings)
+        fetchCandidates(coll)
+    }
+
     function buildQuery(){
         let filters = Object.keys(statusFilters).filter(x => statusFilters[x])
+        let rankings = Object.keys(rankingsFilters).filter(x => rankingsFilters[x]).map(x => Number(x))
         let newQuery = {
             $and: [
-                {"Status": {$in: filters}}
+                {"Status": {$in: filters}},
+                {"Candidate Ranking": {$in: rankings}}
             ]
         }
+            // statusFilters.length > 0 && newQuery.$and.push({"Status": {$in: filters}})
         console.log("new query built: ", newQuery )
         return newQuery
     }
@@ -58,6 +85,7 @@ export default function Candidates({ f7route }) {
     }
 
     useEffect(()=>{console.log("effect: filters changed")},[statusFilters])
+    useEffect(()=>{console.log("effect: rankings changed")},[rankingsFilters])
 
     useEffect(() => {
         fetchCandidates(coll)
@@ -74,7 +102,7 @@ export default function Candidates({ f7route }) {
         </Navbar>
         <Panel right cover themeDark containerEl="#panel-page" id="panel-nested">
           <Page>
-            <List accordionList>
+            {/* <List accordionList>
                 
                 <ListItem accordionItem active title="Sort">
                     <AccordionContent>
@@ -94,29 +122,65 @@ export default function Candidates({ f7route }) {
                         </List>
                     </AccordionContent>
                 </ListItem>
+            </List> */}
+            <BlockTitle className="display-flex justify-content-space-between">
+                Candidate Status{' '}
+            </BlockTitle>
+            <List>
+                <ListItem title="Approved" textColor="teal" color="teal">
+                    <Icon slot="media" f7="hand_thumbsup_fill" size="18px" color="teal"></Icon>
+                    <Toggle onToggleChange={(e)=> {updateStatusFilters("approved"); console.log("approved clicked: ", e)}} slot="after" defaultChecked={statusFilters.approved} ></Toggle>
+                </ListItem>
+                <ListItem title="Pending" textColor="deeporange" color="deeporange">
+                    <Icon slot="media" f7="pause_circle_fill" size="18px" color="deeporange"></Icon>
+                    <Toggle onToggleChange={()=> {updateStatusFilters("pending"); console.log("pending clicked")}}  slot="after" defaultChecked={statusFilters.pending}></Toggle>
+                </ListItem>
+                <ListItem title="Rejected" textColor="pink" color="pink">
+                    <Icon  slot="media" f7="hand_thumbsdown_fill" size="18px" color="pink"></Icon>
+                    <Toggle onToggleChange={()=> {updateStatusFilters("rejected"); console.log("rejected clicked")}} slot="after" defaultChecked={statusFilters.rejected}></Toggle>
+                </ListItem>
+                <ListItem title="In progress" textColor="lightblue" color="lightblue">
+                    <Icon  slot="media" f7="graph_circle" size="18px" color="lightblue"/>
+                    <Toggle onToggleChange={()=> onNaNChange()} slot="after" defaultChecked={rankingsFilters["NaN"]}></Toggle>
+                </ListItem>
             </List>
-            <List accordionList >
-                <ListItem accordionItem active title="Filters">
-                    <AccordionContent>
-                        <List>
-                            <ListItem title="Approved" textColor="teal" color="teal">
-                                <Icon slot="media" f7="hand_thumbsup_fill" size="18px" color="teal"></Icon>
-                                <Toggle onToggleChange={(e)=> {updateStatusFilters("approved"); console.log("approved clicked: ", e)}} slot="after" defaultChecked={statusFilters.approved} ></Toggle>
-                            </ListItem>
-                            <ListItem title="Pending" textColor="deeporange" color="deeporange">
-                                <Icon slot="media" f7="pause_circle_fill" size="18px" color="deeporange"></Icon>
-                                <Toggle onToggleChange={()=> {updateStatusFilters("pending"); console.log("pending clicked")}}  slot="after" defaultChecked={statusFilters.pending}></Toggle>
-                            </ListItem>
-                            <ListItem title="Rejected" textColor="pink" color="pink">
-                                <Icon  slot="media" f7="hand_thumbsdown_fill" size="18px" color="pink"></Icon>
-                                <Toggle onToggleChange={()=> {updateStatusFilters("rejected"); console.log("rejected clicked")}} slot="after" defaultChecked={statusFilters.rejected}></Toggle>
-                            </ListItem>
-                            {/* <ListItem title="In progress" textColor="lightblue" color="lightblue">
-                                <Icon  slot="media" f7="graph_circle" size="18px" color="lightblue"/>
-                                <Toggle onToggleChange={()=> updateFilters("inProgress")} slot="after" checked={filters.inProgress}></Toggle>
-                            </ListItem> */}
-                        </List>
-                    </AccordionContent>
+            <BlockTitle className="display-flex justify-content-space-between">
+                Candidate Ranking{' '}
+                <span>
+                {Math.min(...Array.from([1,2,3,4,5]).filter(x => rankingsFilters[x]))} - {Math.max(...Array.from([1,2,3,4,5]).filter(x => rankingsFilters[x]))}
+                </span>
+            </BlockTitle>
+            <List simpleList>
+                <ListItem>
+                <ListItemCell className="width-auto flex-shrink-0">
+                    <Icon
+                    f7="star"
+                    size="18px"
+                    color="yellow"
+                    />
+                </ListItemCell>
+                <ListItemCell className="flex-shrink-3">
+                    <Range
+                    min={1}
+                    max={5}
+                    step={1}
+                    value={[
+                        Math.min(...Array.from([1,2,3,4,5]).filter(x => rankingsFilters[x])), 
+                        Math.max(...Array.from([1,2,3,4,5]).filter(x => rankingsFilters[x])), 
+                    ]}
+                    label={true}
+                    dual={true}
+                    color="yellow"
+                    onRangeChange={onRankingRangeChange}
+                    />
+                </ListItemCell>
+                <ListItemCell className="width-auto flex-shrink-0">
+                    <Icon
+                    f7="star_fill"
+                    size="18px"
+                    color="yellow"
+                    />
+                </ListItemCell>
                 </ListItem>
             </List>
           </Page>
