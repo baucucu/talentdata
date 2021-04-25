@@ -171,6 +171,7 @@ export default function Candidates({ f7route }) {
                     label={true}
                     dual={true}
                     color="yellow"
+                    // textColor="black"
                     onRangeChange={onRankingRangeChange}
                     />
                 </ListItemCell>
