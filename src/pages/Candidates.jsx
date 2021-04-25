@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { f7 } from 'framework7-react';
-import { Panel, Button, List, ListItem,ListItemCell,Range, AccordionContent, Toggle, Col, Chip, Icon, Link, Page, Card, CardHeader, CardFooter, CardContent ,Navbar,NavRight, Block, BlockTitle, Row, Segmented} from 'framework7-react';
+import { Badge, Panel, Button, List, ListItem,ListItemCell,Range, AccordionContent, Toggle, Col, Chip, Icon, Link, Page, Card, CardHeader, CardFooter, CardContent ,Navbar,NavRight, Block, BlockTitle, Row, Segmented} from 'framework7-react';
 import mongodb from '../js/mongodb';
 
 
@@ -165,7 +165,7 @@ export default function Candidates({ f7route }) {
                     max={5}
                     step={1}
                     scale={true}
-                    scaleSteps={5}
+                    scaleSteps={4}
                     value={[
                         Math.min(...Array.from([1,2,3,4,5]).filter(x => rankingsFilters[x])), 
                         Math.max(...Array.from([1,2,3,4,5]).filter(x => rankingsFilters[x])), 
@@ -173,7 +173,6 @@ export default function Candidates({ f7route }) {
                     label={true}
                     dual={true}
                     color="yellow"
-                    // textColor="black"
                     onRangeChange={onRankingRangeChange}
                     />
                 </ListItemCell>
@@ -232,8 +231,11 @@ const CandidateCard = (props) => {
                 <p>{firstName}</p>
                 <Link  target="_blank" iconF7="logo_linkedin" color="white" href={`${props.candidate["Public LinkedIn URL"]}`} external/>
             </CardHeader>
-            <CardHeader>
-                <p>{props.candidate["Current Title"]} @ {props.candidate["Current Employer"]}</p>
+            <CardHeader style={{fontSize:"14px"}}>
+                <b>{props.candidate["Current Title"]} @ {props.candidate["Current Employer"]}</b>
+            </CardHeader>
+            <CardHeader style={{fontSize:"14px"}}>
+                <p>{props.candidate["TalentData Notes"]}</p>
             </CardHeader>
             {stars > 0 && <Stars stars={stars}/>}
             {stars > 0 || <CardContent>
@@ -266,6 +268,7 @@ const CandidateCard = (props) => {
 
                 </Block>
             </CardContent>
+
             {props.candidate["Summary"] !== "" && <CardContent width="300px">
                     <List accordionList>
                         <ListItem accordionItem title="Summary">
@@ -282,6 +285,12 @@ const CandidateCard = (props) => {
                     <ListItem accordionItem title="Experience">
                         <AccordionContent>
                             <List mediaList>
+                                <ListItem 
+                                    title={props.candidate["TalentData Notes"]}
+                                    text={props.candidate["TalentData Notes"]} 
+                                    // after= {props.candidate["Tenure"]} 
+                                >
+                                </ListItem>
                                 <ListItem 
                                     title={props.candidate["Current Employer"]}
                                     text={props.candidate["Current Title"]} 
