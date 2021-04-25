@@ -11,7 +11,6 @@ async function loginEmailPassword(email, password) {
       // Authenticate the user
       const user = await app.logIn(credentials);
       // `App.currentUser` updates to match the logged in user
-    //   assert(user.id === app.currentUser.id)
       return user
     } catch(err) {
       console.error("Failed to log in", err);

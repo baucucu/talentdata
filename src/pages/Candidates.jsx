@@ -1,27 +1,39 @@
 import React, {useState, useEffect} from 'react';
-// import { f7ready } from 'framework7-react';
+import { f7 } from 'framework7-react';
 import { Panel, Button, List, ListItem, AccordionContent, Toggle, Col, Chip, Icon, Link, Page, Card, CardHeader, CardFooter, CardContent ,Navbar,NavRight, Block, BlockTitle, Row, Segmented} from 'framework7-react';
 import mongodb from '../js/mongodb';
 
-export default function Candidates({ f7route }) {
-    
-    let [filters, setFilters] = useState()
-    const [sort, setSort] = useState()
 
-    const [syncToAirtable, setSyncToAirtable] = useState(true)
-    const [candidates, setCandidates] = useState([])
+export default function Candidates({ f7route }) {
     
     const db = mongodb.db("candidates")
     const coll = db.collection(f7route.query.collection)
     
-    const fetchCandidates = async (coll) => {
-        const records = await coll.find()
-        setCandidates(records)
+    const [candidates, setCandidates] = useState([])
+    const [statusFilters, setStatusFilters] = useState({
+        approved: true,
+        pending: false,
+        rejected: false
+    })
+    
+    function buildQuery(){
+        let filters = Object.keys(statusFilters).filter(x => statusFilters[x])
+        let newQuery = {
+            $and: [
+                {"Status": {$in: filters}}
+            ]
+        }
+        console.log("new query built: ", newQuery )
+        return newQuery
     }
-
-    const fetchCandidate = async (coll) => {
-        const record = await coll.findOne()
-        console.log(record)
+    
+    
+    const fetchCandidates = async (coll) => {
+        const records = await coll.find(buildQuery())
+        console.log("candidates fetched: ",records.length)
+        setCandidates(records)
+        return records
+        
     }
 
     const updateCandidate = async (coll, _id, status) => {
@@ -38,10 +50,18 @@ export default function Candidates({ f7route }) {
         return result
     }
     
-    useEffect(() =>{
+    const updateStatusFilters = (value) => {
+        let filters = statusFilters
+        filters[value] = !statusFilters[value]
+        setStatusFilters(filters)
         fetchCandidates(coll)
-        fetchCandidate(coll)
-    },[])
+    }
+
+    useEffect(()=>{console.log("effect: filters changed")},[statusFilters])
+
+    useEffect(() => {
+        fetchCandidates(coll)
+    }, [])
 
     return (
       <Page id="panel-page">
@@ -81,20 +101,20 @@ export default function Candidates({ f7route }) {
                         <List>
                             <ListItem title="Approved" textColor="teal" color="teal">
                                 <Icon slot="media" f7="hand_thumbsup_fill" size="18px" color="teal"></Icon>
-                                <Toggle slot="after" ></Toggle>
+                                <Toggle onToggleChange={(e)=> {updateStatusFilters("approved"); console.log("approved clicked: ", e)}} slot="after" defaultChecked={statusFilters.approved} ></Toggle>
                             </ListItem>
                             <ListItem title="Pending" textColor="deeporange" color="deeporange">
                                 <Icon slot="media" f7="pause_circle_fill" size="18px" color="deeporange"></Icon>
-                                <Toggle slot="after" ></Toggle>
+                                <Toggle onToggleChange={()=> {updateStatusFilters("pending"); console.log("pending clicked")}}  slot="after" defaultChecked={statusFilters.pending}></Toggle>
                             </ListItem>
-                            <ListItem title="Rejcted" textColor="pink" color="pink">
-                                <Icon slot="media" f7="hand_thumbsdown_fill" size="18px" color="pink"></Icon>
-                                <Toggle slot="after" ></Toggle>
+                            <ListItem title="Rejected" textColor="pink" color="pink">
+                                <Icon  slot="media" f7="hand_thumbsdown_fill" size="18px" color="pink"></Icon>
+                                <Toggle onToggleChange={()=> {updateStatusFilters("rejected"); console.log("rejected clicked")}} slot="after" defaultChecked={statusFilters.rejected}></Toggle>
                             </ListItem>
-                            <ListItem title="In progress" textColor="lightblue" color="lightblue">
-                                <Icon slot="media" f7="graph_circle" size="18px" color="lightblue"/>
-                                <Toggle slot="after" ></Toggle>
-                            </ListItem>
+                            {/* <ListItem title="In progress" textColor="lightblue" color="lightblue">
+                                <Icon  slot="media" f7="graph_circle" size="18px" color="lightblue"/>
+                                <Toggle onToggleChange={()=> updateFilters("inProgress")} slot="after" checked={filters.inProgress}></Toggle>
+                            </ListItem> */}
                         </List>
                     </AccordionContent>
                 </ListItem>
@@ -131,16 +151,16 @@ const CandidateCard = (props) => {
     
     const fetchCandidate = async _id => {
         const record = await coll.findOne({"_id": _id})
-        console.log("candidate fetched", record)
+        console.log("candidate fetched: ", record)
         setCandidate(record)
     }
-
+    
     useEffect(() => {
         setCandidate(props.candidate)
     },[])
 
     return(
-        <Card style={{width: "360px"}} outline={candidate["Status"] === "" ? null : true} borderColor={candidate["Status"] === "" ? null : candidate["Status"] === "approved" ? "teal" : "pink"}>
+        <Card style={{width: "360px"}} outline={candidate["Status"] === "pending" ? null : true} borderColor={candidate["Status"] === "" ? null : candidate["Status"] === "approved" ? "teal" : "pink"}>
             <CardHeader>
                 <p>{firstName} ({props.candidate["City"]}, {props.candidate["Country"]})  </p>
                 <Link  target="_blank" iconF7="logo_linkedin" color="white" href={`${props.candidate["Public LinkedIn URL"]}`} external/>
@@ -254,9 +274,9 @@ const CandidateCard = (props) => {
                         </Button>
                         <Button 
                             color="deeporange"
-                            active={candidate["Status"] === ""}
-                            textColor={candidate["Status"] === "" ? "black" : "deeporange"}
-                            onClick={() => {updateCandidate(coll, candidate._id, "").then(() => {fetchCandidate(candidate._id)}); console.log("pending clicked")}}
+                            active={candidate["Status"] === "pending"}
+                            textColor={candidate["Status"] === "pending" ? "black" : "deeporange"}
+                            onClick={() => {updateCandidate(coll, candidate._id, "pending").then(() => {fetchCandidate(candidate._id)}); console.log("pending clicked")}}
                         >
                             <Icon f7="pause_circle_fill" size="14px" style={{marginRight:"8px"}}></Icon>
                             Pending

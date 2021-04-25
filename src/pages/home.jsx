@@ -10,7 +10,7 @@ import {
 
 export default function Home({ f7route, f7router }) {
   
-  console.log("query: ",f7route.query.collection)
+  console.log("URL query: ",f7route.query.collection)
   
   let [collection, setCollection] = useState()
 
