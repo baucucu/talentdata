@@ -12,16 +12,16 @@ export default function Candidates({ f7route }) {
     const [candidates, setCandidates] = useState([])
     const [statusFilters, setStatusFilters] = useState({
         approved: true,
-        pending: false,
-        rejected: false
+        pending: true,
+        rejected: true
     })
     const [rankingsFilters, setRankingFilters] = useState({
-        1: false,
-        2: false,
+        1: true,
+        2: true,
         3: true,
         4: true,
         5: true,
-        NaN: false
+        NaN: true
     })
     const onRankingRangeChange = (values) => {
         console.log("ranking range changed: ", values)
@@ -226,8 +226,11 @@ const CandidateCard = (props) => {
     return(
         <Card style={{width: "360px"}} outline={candidate["Status"] === "pending" ? null : true} borderColor={candidate["Status"] === "" ? null : candidate["Status"] === "approved" ? "teal" : "pink"}>
             <CardHeader>
-                <p>{firstName} ({props.candidate["City"]}, {props.candidate["Country"]})  </p>
+                <p>{firstName}</p>
                 <Link  target="_blank" iconF7="logo_linkedin" color="white" href={`${props.candidate["Public LinkedIn URL"]}`} external/>
+            </CardHeader>
+            <CardHeader>
+                <p>{props.candidate["Current Title"]} @ {props.candidate["Current Employer"]}</p>
             </CardHeader>
             {stars > 0 && <Stars stars={stars}/>}
             {stars > 0 || <CardContent>
@@ -238,6 +241,12 @@ const CandidateCard = (props) => {
                     <img src={props.candidate["Photo-src"]} width="100%" alt="profile"/>
                 </Col>
             </CardContent >
+            <CardContent>
+                <Block>
+                    <Chip outline style={{marginRight:"4px", fontSize:"11px"}}>{props.candidate["City"]}</Chip>
+                    <Chip outline style={{marginRight:"4px", fontSize:"11px"}}>{props.candidate["Country"]}</Chip>
+                </Block>
+            </CardContent>
             {props.candidate["Language 1"] !== "null" && <CardContent >
                 <Block>
                     <Chip style={{marginRight:"4px", fontSize:"11px"}}>{props.candidate["Language 1"]}</Chip>
