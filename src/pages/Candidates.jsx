@@ -58,7 +58,7 @@ export default function Candidates({ f7route }) {
     const fetchCandidates = async (coll) => {
         const records = await coll.find(buildQuery())
         console.log("candidates fetched: ",records.length)
-        setCandidates(records)
+        setCandidates(records.sort((a,b) => b["Candidate Ranking"] - a["Candidate Ranking"]))
         return records
         
     }
